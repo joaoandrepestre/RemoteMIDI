@@ -1,31 +1,27 @@
 "use strict"
 
 const address = require('./address.json');
-const udp = require('dgram');
+const tcp = require('net');
 const buffer = require('buffer');
 
 // creating a client socket
-const client = udp.createSocket('udp4');
+let client = new tcp.Socket();
 
-//buffer msg
-let data = Buffer.from('siddheshrane');
-
-client.on('message',function(msg,info){
-  console.log('Data received from server : ' + msg.toString());
-  console.log('Received %d bytes from %s:%d\n',msg.length, info.address, info.port);
+client.connect(address.port, address.ip, () => {
+  console.log('Connected!');
 });
 
 //sending msg
-client.send(createMessage(),address.port,address.ip,function(error){
-  if(error){
+client.write(createMessage(), (error) => {
+  if (error) {
     client.close();
-  }else{
+  } else {
     console.log('Data sent !!!');
   }
 });
 
-function createMessage(){
-    // Code to get input from MAX
-    let msg = Buffer.from('doidera');
-    return msg;
+function createMessage() {
+  // Code to get input from MAX
+  let msg = Buffer.from('doidera');
+  return msg;
 }
